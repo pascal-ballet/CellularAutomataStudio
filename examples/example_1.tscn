@@ -1,0 +1,26 @@
+[gd_scene load_steps=3 format=3 uid="uid://ddr6qtwy1pesd"]
+
+[ext_resource type="Script" path="res://addons/cellular_automata_studio/cellular_automata_studio_2d.gd" id="1_6846p"]
+[ext_resource type="Texture2D" uid="uid://demftcowdd5c6" path="res://examples/icon.svg" id="2_s3fct"]
+
+[node name="CompShadStudioEx1" type="Node2D"]
+
+[node name="Label" type="Label" parent="."]
+offset_left = 395.0
+offset_top = 3.0
+offset_right = 626.0
+offset_bottom = 62.0
+scale = Vector2(1.72, 1.72)
+text = "Cellular Automata Studio
+Example 1"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="CellularAutomataStudio2D" type="Node" parent="." node_paths=PackedStringArray("data")]
+script = ExtResource("1_6846p")
+data = [NodePath("../Matrix1"), NodePath("")]
+
+[node name="Matrix1" type="Sprite2D" parent="."]
+position = Vector2(294, 315)
+scale = Vector2(3.27344, 3.02344)
+texture = ExtResource("2_s3fct")
