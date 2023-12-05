@@ -5,14 +5,13 @@
 
 [node name="CompShadStudioEx1" type="Node2D"]
 
-[node name="CellularAutomataStudio2D" type="Node" parent="." node_paths=PackedStringArray("matrix", "matrix_future")]
+[node name="CellularAutomataStudio2D" type="Node" parent="." node_paths=PackedStringArray("matrix")]
 script = ExtResource("1_6846p")
 pause = true
 nb_passes = 2
 WSX = 512
 WSY = 512
 matrix = NodePath("../Grid512x512")
-matrix_future = NodePath("")
 
 [node name="Label" type="Label" parent="."]
 offset_left = 395.0
