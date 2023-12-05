@@ -1,9 +1,18 @@
 [gd_scene load_steps=3 format=3 uid="uid://ddr6qtwy1pesd"]
 
 [ext_resource type="Script" path="res://addons/cellular_automata_studio/cellular_automata_studio_2d.gd" id="1_6846p"]
-[ext_resource type="Texture2D" uid="uid://demftcowdd5c6" path="res://examples/icon.svg" id="2_s3fct"]
+[ext_resource type="Texture2D" uid="uid://2behgeplwycn" path="res://examples/grid_512x512.png" id="2_2d48e"]
 
 [node name="CompShadStudioEx1" type="Node2D"]
+
+[node name="CellularAutomataStudio2D" type="Node" parent="." node_paths=PackedStringArray("matrix", "matrix_future")]
+script = ExtResource("1_6846p")
+pause = true
+nb_passes = 2
+WSX = 512
+WSY = 512
+matrix = NodePath("../Grid512x512")
+matrix_future = NodePath("")
 
 [node name="Label" type="Label" parent="."]
 offset_left = 395.0
@@ -16,11 +25,25 @@ Example 1"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="CellularAutomataStudio2D" type="Node" parent="." node_paths=PackedStringArray("data")]
-script = ExtResource("1_6846p")
-data = [NodePath("../Matrix1"), NodePath("")]
+[node name="ButtonStep" type="Button" parent="."]
+offset_left = 82.0
+offset_top = 160.0
+offset_right = 182.0
+offset_bottom = 191.0
+scale = Vector2(2.7, 2.7)
+text = "Step"
 
-[node name="Matrix1" type="Sprite2D" parent="."]
-position = Vector2(294, 315)
-scale = Vector2(3.27344, 3.02344)
-texture = ExtResource("2_s3fct")
+[node name="ButtonPlay" type="Button" parent="."]
+offset_left = 82.0
+offset_top = 262.0
+offset_right = 182.0
+offset_bottom = 293.0
+scale = Vector2(2.7, 2.7)
+text = "Play"
+
+[node name="Grid512x512" type="Sprite2D" parent="."]
+position = Vector2(805, 376)
+texture = ExtResource("2_2d48e")
+
+[connection signal="pressed" from="ButtonStep" to="CellularAutomataStudio2D" method="_on_button_step"]
+[connection signal="pressed" from="ButtonPlay" to="CellularAutomataStudio2D" method="_on_button_play"]

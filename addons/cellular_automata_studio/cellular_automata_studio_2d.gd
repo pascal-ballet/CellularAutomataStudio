@@ -17,8 +17,7 @@ var current_pass 	: int = 0
 
 #region ComputeShaderStudio
 
-var GLSL_header = """
-#version 450
+var GLSL_header = """#version 450
 
 // Invocations in the (x, y, z) dimension
 layout(local_size_x = 8, local_size_y = 8, local_size_z = 1) in;
@@ -49,29 +48,47 @@ layout(binding = 0) buffer Params {
 ## Write your GLSL code here
 @export_multiline var GLSL_code : String = """
 // Write your cell states HERE
-#define state_0 = 0xFF000000 // Black
-#define state_1 = 0xFF00FF00 // Green
+int state_0 = 0xFF0000FF; // Red
+int state_1 = 0xFF00FFFF; // Green
 
-// Write your rules HERE
 void main() {
 	uint x = gl_GlobalInvocationID.x;
 	uint y = gl_GlobalInvocationID.y;
 	uint p = x + y * WSX;
 
-	// STATE_1 behaviors
-	if (data_present[p] == state_1) {
-		// Overpopulation
-		if (nb_neigbhors_8(x,y,state_1) > 4) {
-			data_future[p] = state_0;
+	if(current_pass == 0) {
+		int present_state = data_present[p];
+		// Write your RULES below vvvvvvvvvvvvvvvvv
+		int future_state = state_0;
+		if(step == 0) { // Initialization ---------
+			int threshold = 2147483647 - 10000000;
+			if(present_state <= threshold)
+				future_state = state_0;
+			else
+				future_state = state_1;
+		} else { // Execution----------------------
+			// STATE_0 behaviors
+			if (present_state == state_0) {
+				// Propagation
+				if (nb_neigbhors_8(x,y,state_1) >= 1) {
+					future_state = state_1;
+				}
+			}
+			if (present_state == state_1) {
+				future_state = state_1;
+			}
 		}
+		// END of your RULES ^^^^^^^^^^^^^^^^^^^^^^
+		data_future[p] = future_state;
+	} else { // current_pass = 1
+		data_present[p] = data_future[p];
 	}
-
-
 
 }
 """
 ## Drag and drop your Sprite2D here.
-@export var data:Array[Sprite2D]
+@export var matrix:Sprite2D
+@export var matrix_future:Sprite2D
 
 var rd 				: RenderingDevice
 var shader 			: RID
@@ -104,7 +121,7 @@ func compile():
 	# *  SHADER CREATION  *
 	# *********************
 
-	var nb_buffers : int = data.size()
+	var nb_buffers : int = 2
 
 	# Create GLSL Header
 	GLSL_header += """
@@ -112,13 +129,35 @@ uint WSX="""+str(WSX)+""";"""+"""
 uint WSY="""+str(WSY)+""";
 """
 
-	for i in nb_buffers:
-		GLSL_header += """
-layout(binding = """+str(i+1)+""") buffer Data"""+str(i)+""" {
-	int data_"""+str(i)+"""[];
+	GLSL_header += """
+layout(binding = 1) buffer Data0 {
+	int data_present[];
 };
-
 """
+	GLSL_header += """
+layout(binding = 2) buffer Data1 {
+	int data_future[];
+};
+"""
+
+	GLSL_header += """
+uint nb_neigbhors_8(uint x,uint y, int state) {
+	uint nb = 0;
+	uint p = x + y * WSX;
+	for(int i = int(x)-1; i <= int(x)+1; i++) {
+		uint ii = uint((i+int(WSX))) % WSX;
+		for(int j = int(y)-1; j <= int(y)+1; j++) {
+			uint jj = uint((j+int(WSY))) % WSY;
+			uint kk = ii + jj * WSX;
+			if(data_present[kk] == state && kk != p)
+				nb++;
+		}
+	}
+	return nb;
+}
+"""
+
+
 	var GLSL_all : String = GLSL_header + GLSL_code
 	if print_generated_code == true:
 		print(GLSL_all)
@@ -167,7 +206,7 @@ layout(binding = """+str(i+1)+""") buffer Data"""+str(i)+""" {
 	uniform_params.binding = 0 # this needs to match the "binding" in our shader file
 	uniform_params.add_id(buffer_params)
 	
-	var nb_uniforms : int = data.size()
+	var nb_uniforms : int = 2
 	for b in nb_uniforms:
 		var uniform = RDUniform.new()
 		uniform.uniform_type = RenderingDevice.UNIFORM_TYPE_STORAGE_BUFFER
@@ -196,10 +235,12 @@ layout(binding = """+str(i+1)+""") buffer Data"""+str(i)+""" {
 
 func display_all_values():
 	# Read back the data from the buffers
-	for b in data.size():
-		var output_bytes :   PackedByteArray = rd.buffer_get_data(buffers[b])
-		if is_instance_valid(data[b]):
-			display_values(data[b], output_bytes)
+	var output_bytes :   PackedByteArray = rd.buffer_get_data(buffers[0])
+	if is_instance_valid(matrix):
+		display_values(matrix, output_bytes)
+	var output_bytes_future :   PackedByteArray = rd.buffer_get_data(buffers[1])
+	if is_instance_valid(matrix_future):
+		display_values(matrix_future, output_bytes)
 
 func display_values(sprite : Sprite2D, values : PackedByteArray): # PackedInt32Array):
 	var image_format : int = Image.FORMAT_RGBA8
@@ -260,7 +301,8 @@ func _update_uniforms():
 
 func _on_button_step():
 	pause = true
-	compute()
+	compute() # current_pass = 0
+	compute() # current_pass = 1
 	display_all_values()
 
 
