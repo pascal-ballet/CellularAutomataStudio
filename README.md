@@ -1,12 +1,12 @@
-# Compute Shader Studio
- A plugin for Godot to create compute shaders
+# Cellular Automata Studio
+ A plugin for Godot to create cellular automata
  
-![logo](screenshots/compute_shader_studio_headline.png)
+![logo](screenshots/cellular_automata_headline.png)
 
 **[Compute Shader Studio](https://virtulab.univ-brest.fr) is an addon for Godot Engine that enables you to write Compute Shaders in a minute:**
 
-![logo](screenshots/compute_shader_studio_ex2.png)
+![logo](screenshots/cellular_automata_ex.png)
 
-**Read [the tutorial](doc/ComputeShaderStudio.pdf) or look at the [2 minutes video](https://www.youtube.com/watch?v=3bEgPawi7fQ) to make your first Compute Shader in Godot**
+**Read [the tutorial](doc/cellular_automata_studio.pdf) to make your first cellular automata in Godot**
 
 **Several examples are available: test them to understand how they work and what can be done**
