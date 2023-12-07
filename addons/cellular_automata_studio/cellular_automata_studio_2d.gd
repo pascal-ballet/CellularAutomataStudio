@@ -126,6 +126,13 @@ layout(binding = 2) buffer Data1 {
 };
 """
 
+	var states_code : String = "" # States of cells
+	for s in cell_states:
+		var line : String = "uint " +s.text+ " = " +s.color.to_html(true)+";"
+		states_code += line
+	GLSL_header += states_code
+
+
 	GLSL_header += """
 uint nb_neigbhors_8(uint x,uint y, int state) {
 	uint nb = 0;
@@ -145,8 +152,6 @@ uint nb_neigbhors_8(uint x,uint y, int state) {
 
 	GLSL_header += functions_code
 
-	var states_code : String = ""
-
 
 	var GLSL_code : String = """
 // Write your cell states HERE
@@ -163,40 +168,9 @@ void main() {
 		// Write your RULES below vvvvvvvvvvvvvvvvv
 		int future_state = present_state;
 		if(step == 0) { // Initialization ---------
-		
-		
-		
-			int threshold = 2147483647 - 10000000;
-			if(present_state <= threshold)
-				future_state = state_0;
-			else
-				future_state = state_1;
-				
-				
-				
-				
+""" + init_code + """
 		} else { // Execution----------------------
-		
-		
-		
-		
-			// STATE_0 behaviors
-			if (present_state == state_0) {
-				// Propagation
-				if (nb_neigbhors_8(x,y,state_1) >= 1) {
-					future_state = state_1;
-				}
-			}
-			if (present_state == state_1) {
-				future_state = state_1;
-			}
-			
-			
-			
-			
-			
-			
-			
+""" + exec_code + """
 		}
 		// END of your RULES ^^^^^^^^^^^^^^^^^^^^^^
 		data_future[p] = future_state;
@@ -206,8 +180,6 @@ void main() {
 
 }
 """
-
-
 
 
 
