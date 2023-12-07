@@ -3,18 +3,6 @@ class_name CellularAutomata2D
 
 var current_pass 	: int = 0
 
-# Put your GLSL code in the GLSL_main string below
-# Here are all the accessible variables (uniforms) inside your GLSL code:
-#   uint x,y     : from GlobalInvocationID.x and .y
-#   uint p       : the position [x][y] in the invocation
-#   uint WSX,WSY : the Global WorkSpace of invocations (generally match the data size)
-#   int* data_0, data_1, etc : are the data treated (can be displayed by Sprite2D).
-#                  Access them by data_0[p], data_1[p], etc
-#   uint step    : simulation step of the execution. Incresed by 1 after nb_passes
-#   uint nb_passes: the number of passes your code needs (by step).
-# 					There is a barrier between each pass.
-#   uint current_pass: pass currently executed (one pass per frame, nb_passes by step)
-
 #region ComputeShaderStudio
 
 var GLSL_header = """#version 450
@@ -32,14 +20,14 @@ layout(binding = 0) buffer Params {
 ## Print the current step.
 @export var print_step:bool = false
 ## Print the current pass.
-@export var print_passes:bool = false
+var print_passes:bool = false
 ## Print in Output all the generated code.
 ## Can be usefull for debugging.
 @export var print_generated_code:bool = false
 ## Do not execute compute shader at launch.
 @export var pause:bool = false
 ## Number of passes (synchronized code) needed.
-@export var nb_passes		: int = 1
+var nb_passes		: int = 2
 ## Workspace Size X, usually it matches the x size of your Sprite2D image
 @export var WSX				: int = 128
 ## Workspace Size Y, usually it matches the y size of your Sprite2D image
