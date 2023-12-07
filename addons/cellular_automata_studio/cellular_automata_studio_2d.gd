@@ -47,6 +47,23 @@ layout(binding = 0) buffer Params {
 
 @export var cell_states : Array[StringColor]= [StringColor.new()]
 
+@export_multiline var init_code : String = """
+// INITIALISATION CODE (step = 0)
+// You will use the following variables:
+//    uint x,y,p (cell position)
+//    int present_state (cell state. An integer random value from int.MIN and int.MAX)
+//    int future_state (the new cell state)
+"""
+
+@export_multiline var exec_code : String = """
+// EXECUTION CODE (step >= 1)
+// You will use the following variables:
+//    uint x,y,p (cell position)
+//    int present_state (current cell state. Do not modify)
+//    int future_state (the new cell state)
+"""
+
+
 ## Write your GLSL code here
 @export_multiline var GLSL_code : String = """
 // Write your cell states HERE
