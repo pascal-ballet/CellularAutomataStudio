@@ -61,6 +61,7 @@ layout(binding = 0) buffer Params {
 @export_multiline var exec_code : String = """
 // EXECUTION CODE (step >= 1)
 // You will use the following variables:
+//    uint WSX, WSY (global WorkSpace in X and Y)
 //    uint x,y,p (cell position)
 //    int present_state (current cell state. Do not modify)
 //    int future_state (the new cell state)
@@ -70,6 +71,8 @@ layout(binding = 0) buffer Params {
 @export_multiline var functions_code : String = """
 // FUNCTIONS CODE
 // Write all your functions here (in GLSL)
+// You can use the following global variables:
+//    uint WSX, WSY (global WorkSpace in X and Y)
 // Example
 // int your_function(int x, int y) {
 //    if (x == WSX/2 && y == WSY/2)
@@ -137,7 +140,12 @@ layout(binding = 2) buffer Data1 {
 
 	var states_code : String = "" # States of cells
 	for s in cell_states:
-		var line : String = "int " +s.text+ " = 0x" +s.color.to_html(true)+";"
+		var col_html:String = s.color.to_html(true)
+		var R:String = col_html.substr(0,2)
+		var G:String = col_html.substr(2,2)
+		var B:String = col_html.substr(4,2)
+		var A:String = col_html.substr(6,2)
+		var line : String = "int " +s.text+ " = 0x" +A+B+G+R+";"
 		line += """
 """
 		states_code += line
