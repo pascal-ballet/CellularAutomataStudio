@@ -45,6 +45,8 @@ layout(binding = 0) buffer Params {
 ## Workspace Size Y, usually it matches the y size of your Sprite2D image
 @export var WSY				: int = 128
 
+@export var cell_states : Array[StringColor]= [StringColor.new()]
+
 ## Write your GLSL code here
 @export_multiline var GLSL_code : String = """
 // Write your cell states HERE
@@ -106,8 +108,10 @@ var uniform_set		: RID
 
 # Called when the node enters the scene tree for the first time.
 #region _ready
+#func _enter_tree():
+#	cell_states = [StringColor.new(),StringColor.new()]
 func _ready():
-	compile()
+		compile()
 
 func compile():
 	# Create a local rendering device.
