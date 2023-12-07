@@ -23,6 +23,7 @@ color = Color(1, 1, 1, 1)
 
 [node name="CellularAutomataStudio2D" type="Node" parent="." node_paths=PackedStringArray("matrix")]
 script = ExtResource("1_6846p")
+print_generated_code = true
 pause = true
 nb_passes = 2
 WSX = 512

@@ -51,6 +51,7 @@ layout(binding = 0) buffer Params {
 @export_multiline var init_code : String = """
 // INITIALISATION CODE (step = 0)
 // You will use the following variables:
+//    uint WSX, WSY (global WorkSpace in X and Y)
 //    uint x,y,p (cell position)
 //    int present_state (cell state. An integer random value from int.MIN and int.MAX)
 //    int future_state (the new cell state)
@@ -68,6 +69,14 @@ layout(binding = 0) buffer Params {
 ## Write your own functions here (in GLSL)
 @export_multiline var functions_code : String = """
 // FUNCTIONS CODE
+// Write all your functions here (in GLSL)
+// Example
+// int your_function(int x, int y) {
+//    if (x == WSX/2 && y == WSY/2)
+//       return my_state_1
+//    else
+//       return my_state_2
+// }
 """
 
 ## Drag and drop your Sprite2D here.
@@ -128,7 +137,9 @@ layout(binding = 2) buffer Data1 {
 
 	var states_code : String = "" # States of cells
 	for s in cell_states:
-		var line : String = "uint " +s.text+ " = " +s.color.to_html(true)+";"
+		var line : String = "int " +s.text+ " = 0x" +s.color.to_html(true)+";"
+		line += """
+"""
 		states_code += line
 	GLSL_header += states_code
 
@@ -154,10 +165,6 @@ uint nb_neigbhors_8(uint x,uint y, int state) {
 
 
 	var GLSL_code : String = """
-// Write your cell states HERE
-int state_0 = 0xFF0000FF; // Red
-int state_1 = 0xFF00FFFF; // Green
-
 void main() {
 	uint x = gl_GlobalInvocationID.x;
 	uint y = gl_GlobalInvocationID.y;
