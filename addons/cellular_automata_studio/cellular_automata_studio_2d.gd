@@ -47,6 +47,7 @@ layout(binding = 0) buffer Params {
 
 @export var cell_states : Array[StringColor]= [StringColor.new()]
 
+## Write your initialisation code here (in GLSL)
 @export_multiline var init_code : String = """
 // INITIALISATION CODE (step = 0)
 // You will use the following variables:
@@ -55,6 +56,7 @@ layout(binding = 0) buffer Params {
 //    int future_state (the new cell state)
 """
 
+## Write your execution code here (in GLSL)
 @export_multiline var exec_code : String = """
 // EXECUTION CODE (step >= 1)
 // You will use the following variables:
@@ -63,48 +65,11 @@ layout(binding = 0) buffer Params {
 //    int future_state (the new cell state)
 """
 
-
-## Write your GLSL code here
-@export_multiline var GLSL_code : String = """
-// Write your cell states HERE
-int state_0 = 0xFF0000FF; // Red
-int state_1 = 0xFF00FFFF; // Green
-
-void main() {
-	uint x = gl_GlobalInvocationID.x;
-	uint y = gl_GlobalInvocationID.y;
-	uint p = x + y * WSX;
-
-	if(current_pass == 0) {
-		int present_state = data_present[p];
-		// Write your RULES below vvvvvvvvvvvvvvvvv
-		int future_state = state_0;
-		if(step == 0) { // Initialization ---------
-			int threshold = 2147483647 - 10000000;
-			if(present_state <= threshold)
-				future_state = state_0;
-			else
-				future_state = state_1;
-		} else { // Execution----------------------
-			// STATE_0 behaviors
-			if (present_state == state_0) {
-				// Propagation
-				if (nb_neigbhors_8(x,y,state_1) >= 1) {
-					future_state = state_1;
-				}
-			}
-			if (present_state == state_1) {
-				future_state = state_1;
-			}
-		}
-		// END of your RULES ^^^^^^^^^^^^^^^^^^^^^^
-		data_future[p] = future_state;
-	} else { // current_pass = 1
-		data_present[p] = data_future[p];
-	}
-
-}
+## Write your own functions here (in GLSL)
+@export_multiline var functions_code : String = """
+// FUNCTIONS CODE
 """
+
 ## Drag and drop your Sprite2D here.
 @export var matrix:Sprite2D
 @export var matrix_future:Sprite2D
@@ -177,6 +142,73 @@ uint nb_neigbhors_8(uint x,uint y, int state) {
 	return nb;
 }
 """
+
+	GLSL_header += functions_code
+
+	var states_code : String = ""
+
+
+	var GLSL_code : String = """
+// Write your cell states HERE
+int state_0 = 0xFF0000FF; // Red
+int state_1 = 0xFF00FFFF; // Green
+
+void main() {
+	uint x = gl_GlobalInvocationID.x;
+	uint y = gl_GlobalInvocationID.y;
+	uint p = x + y * WSX;
+
+	if(current_pass == 0) {
+		int present_state = data_present[p];
+		// Write your RULES below vvvvvvvvvvvvvvvvv
+		int future_state = present_state;
+		if(step == 0) { // Initialization ---------
+		
+		
+		
+			int threshold = 2147483647 - 10000000;
+			if(present_state <= threshold)
+				future_state = state_0;
+			else
+				future_state = state_1;
+				
+				
+				
+				
+		} else { // Execution----------------------
+		
+		
+		
+		
+			// STATE_0 behaviors
+			if (present_state == state_0) {
+				// Propagation
+				if (nb_neigbhors_8(x,y,state_1) >= 1) {
+					future_state = state_1;
+				}
+			}
+			if (present_state == state_1) {
+				future_state = state_1;
+			}
+			
+			
+			
+			
+			
+			
+			
+		}
+		// END of your RULES ^^^^^^^^^^^^^^^^^^^^^^
+		data_future[p] = future_state;
+	} else { // current_pass = 1
+		data_present[p] = data_future[p];
+	}
+
+}
+"""
+
+
+
 
 
 	var GLSL_all : String = GLSL_header + GLSL_code
