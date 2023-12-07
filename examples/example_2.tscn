@@ -1,57 +1,88 @@
-[gd_scene load_steps=3 format=3 uid="uid://cotswmubn7uvm"]
+[gd_scene load_steps=7 format=3 uid="uid://ft04a5sn21sk"]
 
-[ext_resource type="Script" path="res://addons/compute_shader_studio/compute_shader_studio_2d.gd" id="1_2cs40"]
-[ext_resource type="Texture2D" uid="uid://demftcowdd5c6" path="res://examples/icon.svg" id="2_j6qu8"]
+[ext_resource type="Script" path="res://addons/cellular_automata_studio/cellular_automata_studio_2d.gd" id="1_pdqaf"]
+[ext_resource type="Script" path="res://addons/cellular_automata_studio/string_color.gd" id="2_tqgad"]
+[ext_resource type="Texture2D" uid="uid://2behgeplwycn" path="res://examples/grid_512x512.png" id="3_ninfq"]
 
-[node name="Example2" type="Node2D"]
+[sub_resource type="Resource" id="Resource_dpcxm"]
+script = ExtResource("2_tqgad")
+text = "state_0"
+color = Color(1, 0, 0, 1)
 
-[node name="ComputeShaderStudio2D2" type="Node" parent="." node_paths=PackedStringArray("data")]
-script = ExtResource("1_2cs40")
-GLSL_code = "// Write your GLSL code HERE
-void main() {
-    uint x = gl_GlobalInvocationID.x;
-    uint y = gl_GlobalInvocationID.y;
-    uint p = x + y * WSX;
-    int opacity = 0xFF000000 ;
-    int blue = 0x550000;
-    int green = 0x3300;
-    int red = int(y*2) ;
-    data_0[p] = opacity+blue+green+red;
-}
+[sub_resource type="Resource" id="Resource_086xb"]
+script = ExtResource("2_tqgad")
+text = "state_1"
+color = Color(1, 1, 0, 1)
+
+[sub_resource type="Resource" id="Resource_cwwge"]
+script = ExtResource("2_tqgad")
+text = "state_2"
+color = Color(1, 1, 1, 1)
+
+[node name="CompShadStudioEx1" type="Node2D"]
+
+[node name="CellularAutomataStudio2D" type="Node" parent="." node_paths=PackedStringArray("matrix")]
+script = ExtResource("1_pdqaf")
+print_generated_code = true
+pause = true
+nb_passes = 2
+WSX = 512
+WSY = 512
+cell_states = Array[ExtResource("2_tqgad")]([SubResource("Resource_dpcxm"), SubResource("Resource_086xb"), SubResource("Resource_cwwge")])
+init_code = "
+// INITIALISATION CODE (step = 0)
+			int threshold = 2147483647 - 10000000;
+			if(present_state <= threshold)
+				future_state = state_0;
+			else
+				future_state = state_1;"
+exec_code = "
+// EXECUTION CODE (step >= 1)
+
+			// STATE_0 behaviors
+			if (present_state == state_0) {
+				// Propagation
+				if (nb_neighbors_8(x,y,state_1) >= 1) {
+					future_state = state_1;
+				}
+			}
+			if (present_state == state_1) {
+				future_state = state_1;
+			}
 "
-data = [NodePath("../Sprite2D")]
-
-[node name="Sprite2D" type="Sprite2D" parent="."]
-position = Vector2(847, 361)
-scale = Vector2(4.42, 4.42)
-texture = ExtResource("2_j6qu8")
+matrix = NodePath("../Grid512x512")
 
 [node name="Label" type="Label" parent="."]
-offset_left = 371.0
+offset_left = 1.99993
 offset_top = 3.0
-offset_right = 647.0
-offset_bottom = 43.0
+offset_right = 233.0
+offset_bottom = 62.0
 scale = Vector2(1.72, 1.72)
-text = "Compute Shader Studio - Example 2"
+text = "Cellular Automata Studio
+Example 2"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="Label2" type="Label" parent="."]
-offset_left = 29.0
-offset_top = 113.0
-offset_right = 336.0
-offset_bottom = 420.0
-scale = Vector2(1.72, 1.72)
-text = "// Write your GLSL code HERE
-void main() {
-    uint x = gl_GlobalInvocationID.x;
-    uint y = gl_GlobalInvocationID.y;
-    uint p = x + y * WSX;
-    int opacity = 0xFF000000 ;
-    int blue = 0x550000;
-    int green = 0x3300;
-    int red = int(y*2) ;
-    data_0[p] = opacity+blue+green+red;
-}
-"
-vertical_alignment = 1
+[node name="ButtonStep" type="Button" parent="."]
+offset_left = 58.0
+offset_top = 240.0
+offset_right = 158.0
+offset_bottom = 271.0
+scale = Vector2(2.7, 2.7)
+text = "Step"
+
+[node name="ButtonPlay" type="Button" parent="."]
+offset_left = 58.0
+offset_top = 342.0
+offset_right = 158.0
+offset_bottom = 373.0
+scale = Vector2(2.7, 2.7)
+text = "Play"
+
+[node name="Grid512x512" type="Sprite2D" parent="."]
+position = Vector2(840.5, 326)
+scale = Vector2(1.2, 1.2)
+texture = ExtResource("3_ninfq")
+
+[connection signal="pressed" from="ButtonStep" to="CellularAutomataStudio2D" method="_on_button_step"]
+[connection signal="pressed" from="ButtonPlay" to="CellularAutomataStudio2D" method="_on_button_play"]

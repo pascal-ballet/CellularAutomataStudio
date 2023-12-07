@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://ddr6qtwy1pesd"]
+[gd_scene load_steps=6 format=3 uid="uid://ddr6qtwy1pesd"]
 
 [ext_resource type="Script" path="res://addons/cellular_automata_studio/cellular_automata_studio_2d.gd" id="1_6846p"]
 [ext_resource type="Texture2D" uid="uid://2behgeplwycn" path="res://examples/grid_512x512.png" id="2_2d48e"]
@@ -14,11 +14,6 @@ script = ExtResource("2_rqpuf")
 text = "state_1"
 color = Color(1, 1, 0, 1)
 
-[sub_resource type="Resource" id="Resource_cwwge"]
-script = ExtResource("2_rqpuf")
-text = "state_2"
-color = Color(1, 1, 1, 1)
-
 [node name="CompShadStudioEx1" type="Node2D"]
 
 [node name="CellularAutomataStudio2D" type="Node" parent="." node_paths=PackedStringArray("matrix")]
@@ -28,7 +23,7 @@ pause = true
 nb_passes = 2
 WSX = 512
 WSY = 512
-cell_states = Array[ExtResource("2_rqpuf")]([SubResource("Resource_dpcxm"), SubResource("Resource_086xb"), SubResource("Resource_cwwge")])
+cell_states = Array[ExtResource("2_rqpuf")]([SubResource("Resource_dpcxm"), SubResource("Resource_086xb")])
 init_code = "
 // INITIALISATION CODE (step = 0)
 			int threshold = 2147483647 - 10000000;
@@ -42,7 +37,7 @@ exec_code = "
 			// STATE_0 behaviors
 			if (present_state == state_0) {
 				// Propagation
-				if (nb_neigbhors_8(x,y,state_1) >= 1) {
+				if (nb_neighbors_8(x,y,state_1) >= 1) {
 					future_state = state_1;
 				}
 			}
@@ -53,9 +48,9 @@ exec_code = "
 matrix = NodePath("../Grid512x512")
 
 [node name="Label" type="Label" parent="."]
-offset_left = 395.0
+offset_left = 1.99993
 offset_top = 3.0
-offset_right = 626.0
+offset_right = 233.0
 offset_bottom = 62.0
 scale = Vector2(1.72, 1.72)
 text = "Cellular Automata Studio
@@ -64,23 +59,24 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="ButtonStep" type="Button" parent="."]
-offset_left = 82.0
-offset_top = 160.0
-offset_right = 182.0
-offset_bottom = 191.0
+offset_left = 58.0
+offset_top = 240.0
+offset_right = 158.0
+offset_bottom = 271.0
 scale = Vector2(2.7, 2.7)
 text = "Step"
 
 [node name="ButtonPlay" type="Button" parent="."]
-offset_left = 82.0
-offset_top = 262.0
-offset_right = 182.0
-offset_bottom = 293.0
+offset_left = 58.0
+offset_top = 342.0
+offset_right = 158.0
+offset_bottom = 373.0
 scale = Vector2(2.7, 2.7)
 text = "Play"
 
 [node name="Grid512x512" type="Sprite2D" parent="."]
-position = Vector2(805, 376)
+position = Vector2(840.5, 326)
+scale = Vector2(1.2, 1.2)
 texture = ExtResource("2_2d48e")
 
 [connection signal="pressed" from="ButtonStep" to="CellularAutomataStudio2D" method="_on_button_step"]

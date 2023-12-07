@@ -153,7 +153,7 @@ layout(binding = 2) buffer Data1 {
 
 
 	GLSL_header += """
-uint nb_neigbhors_8(uint x,uint y, int state) {
+uint nb_neighbors_8(uint x,uint y, int state) {
 	uint nb = 0;
 	uint p = x + y * WSX;
 	for(int i = int(x)-1; i <= int(x)+1; i++) {
