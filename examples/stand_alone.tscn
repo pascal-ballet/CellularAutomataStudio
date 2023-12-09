@@ -1,0 +1,145 @@
+[gd_scene load_steps=7 format=3 uid="uid://cn0dsh2q6mbwq"]
+
+[ext_resource type="Script" path="res://addons/cellular_automata_studio/cellular_automata_studio_2d.gd" id="1_g2lpm"]
+
+[sub_resource type="CodeHighlighter" id="CodeHighlighter_diay8"]
+number_color = Color(1, 1, 0.501961, 1)
+symbol_color = Color(1, 0.501961, 1, 1)
+function_color = Color(0.501961, 1, 1, 1)
+member_variable_color = Color(1, 0.501961, 0.501961, 1)
+
+[sub_resource type="CodeHighlighter" id="CodeHighlighter_1sujs"]
+number_color = Color(1, 1, 0, 1)
+symbol_color = Color(1, 0, 1, 1)
+function_color = Color(0, 1, 1, 1)
+member_variable_color = Color(1, 0.501961, 0.501961, 1)
+
+[sub_resource type="CodeHighlighter" id="CodeHighlighter_8t2bd"]
+number_color = Color(1, 1, 0, 1)
+symbol_color = Color(1, 0, 1, 1)
+function_color = Color(0, 1, 1, 1)
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_wghjs"]
+noise_type = 0
+seed = 1
+frequency = 0.6163
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_0uf6p"]
+noise = SubResource("FastNoiseLite_wghjs")
+
+[node name="VBoxMain" type="VBoxContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="HBoxToolbar" type="HBoxContainer" parent="."]
+custom_minimum_size = Vector2(48, 48)
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="HBoxToolbar"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ButtonCompile" type="Button" parent="HBoxToolbar/HBoxContainer"]
+custom_minimum_size = Vector2(48, 48)
+layout_mode = 2
+tooltip_text = "Compile your code"
+theme_override_font_sizes/font_size = 24
+text = "C"
+
+[node name="ButtonStep" type="Button" parent="HBoxToolbar/HBoxContainer"]
+custom_minimum_size = Vector2(48, 48)
+layout_mode = 2
+tooltip_text = "Execute one step of your code"
+theme_override_font_sizes/font_size = 24
+text = ">|"
+
+[node name="ButtonExec" type="Button" parent="HBoxToolbar/HBoxContainer"]
+custom_minimum_size = Vector2(48, 48)
+layout_mode = 2
+tooltip_text = "Execute your code"
+theme_override_font_sizes/font_size = 24
+text = ">"
+
+[node name="LabelTitle" type="Label" parent="HBoxToolbar"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = " Cellular Automata Studio (standalone version 1.0) "
+
+[node name="StandAlone" type="HSplitContainer" parent="."]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="VBoxCode" type="VBoxContainer" parent="StandAlone"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="TextEditInit" type="TextEdit" parent="StandAlone/VBoxCode"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_font_sizes/font_size = 24
+text = "// INITIALISATION CODE : step = 0
+// You will use the following variables:
+//    uint WSX, WSY : global WorkSpace in X and Y
+//    uint x,y,p : cell position
+//    int present_state : cell state. An integer random value from int.MIN and int.MAX
+//    int future_state : the new cell state
+"
+syntax_highlighter = SubResource("CodeHighlighter_diay8")
+
+[node name="TextEditExec" type="TextEdit" parent="StandAlone/VBoxCode"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+size_flags_stretch_ratio = 2.0
+theme_override_font_sizes/font_size = 24
+text = "// EXECUTION CODE : step >= 1
+// You will use the following variables:
+//    uint WSX, WSY : global WorkSpace in X and Y
+//    uint x,y,p : cell position
+//    int present_state : current cell state. Do not modify
+//    int future_state : the new cell state
+"
+syntax_highlighter = SubResource("CodeHighlighter_1sujs")
+
+[node name="TextEditFunc" type="TextEdit" parent="StandAlone/VBoxCode"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+size_flags_stretch_ratio = 2.0
+theme_override_font_sizes/font_size = 24
+text = "// FUNCTIONS CODE
+// Write all your functions here in GLSL
+// You can use the following global variables:
+//    uint WSX, WSY : global WorkSpace in X and Y
+// Example
+// int your_function(int x, int y) {
+//    if (x == WSX/2 && y == WSY/2)
+//       return my_state_1;
+//    else
+//       return my_state_2;
+// }
+"
+syntax_highlighter = SubResource("CodeHighlighter_8t2bd")
+
+[node name="TextureRect" type="TextureRect" parent="StandAlone"]
+layout_mode = 2
+size_flags_horizontal = 3
+texture = SubResource("NoiseTexture2D_0uf6p")
+
+[node name="CellularAutomata2D" type="Node" parent="."]
+script = ExtResource("1_g2lpm")
+
+[node name="LabelOutput" type="Label" parent="."]
+layout_mode = 2
+size_flags_vertical = 1
+theme_override_font_sizes/font_size = 24
+text = "Output :
+
+"
+clip_text = true
