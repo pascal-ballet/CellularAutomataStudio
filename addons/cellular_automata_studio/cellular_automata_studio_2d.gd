@@ -33,6 +33,10 @@ var nb_passes		: int = 2
 ## Workspace Size Y, usually it matches the y size of your Sprite2D image
 @export var WSY				: int = 128
 
+## Drag and drop your Sprite2D here.
+@export var matrix:Sprite2D
+var matrix_future:Sprite2D
+
 @export var cell_states : Array[StringColor]= [StringColor.new()]
 
 ## Write your initialisation code here (in GLSL)
@@ -69,10 +73,6 @@ var nb_passes		: int = 2
 //       return my_state_2
 // }
 """
-
-## Drag and drop your Sprite2D here.
-@export var matrix:Sprite2D
-@export var matrix_future:Sprite2D
 
 var rd 				: RenderingDevice
 var shader 			: RID
