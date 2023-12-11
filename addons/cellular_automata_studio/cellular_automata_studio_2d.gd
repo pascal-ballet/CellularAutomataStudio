@@ -5,18 +5,7 @@ var current_pass 	: int = 0
 
 #region ComputeShaderStudio
 
-var GLSL_header = """#version 450
-
-// Invocations in the (x, y, z) dimension
-layout(local_size_x = 8, local_size_y = 8, local_size_z = 1) in;
-
-// Bindings to the buffers we create in our script
-layout(binding = 0) buffer Params {
-	int step;
-	int current_pass;
-};
-
-"""
+var GLSL_header = ""
 ## Print the current step.
 @export var print_step:bool = false
 ## Print the current pass.
@@ -35,9 +24,9 @@ var nb_passes		: int = 2
 
 ## Drag and drop your Sprite2D here.
 @export var display_in:Node
-var matrix_future:Sprite2D
+#var matrix_future:Sprite2D
 
-@export var cell_states : Array[StringColor]= [StringColor.new()]
+@export var cell_states : Array[StringColor] = [StringColor.new()]
 
 ## Write your initialisation code here (in GLSL)
 @export_multiline var init_code : String = """
@@ -93,7 +82,8 @@ var uniform_set		: RID
 #func _enter_tree():
 #	cell_states = [StringColor.new(),StringColor.new()]
 func _ready():
-		compile()
+	get_code()
+	compile()
 
 func compile():
 	# Create a local rendering device.
@@ -106,6 +96,19 @@ func compile():
 	# *********************
 	# *  SHADER CREATION  *
 	# *********************
+
+	GLSL_header = """#version 450
+
+// Invocations in the (x, y, z) dimension
+layout(local_size_x = 8, local_size_y = 8, local_size_z = 1) in;
+
+// Bindings to the buffers we create in our script
+layout(binding = 0) buffer Params {
+	int step;
+	int current_pass;
+};
+
+"""
 
 	var nb_buffers : int = 2
 
@@ -267,10 +270,10 @@ func display_all_values():
 	if is_instance_valid(display_in):
 		display_values(display_in, output_bytes)
 	var output_bytes_future :   PackedByteArray = rd.buffer_get_data(buffers[1])
-	if is_instance_valid(matrix_future):
-		display_values(matrix_future, output_bytes)
+	#if is_instance_valid(matrix_future):
+	#	display_values(matrix_future, output_bytes)
 
-func display_values(disp, values : PackedByteArray): # PackedInt32Array):
+func display_values(disp, values : PackedByteArray):
 	var image_format : int = Image.FORMAT_RGBA8
 	var image := Image.create_from_data(WSX, WSY, false, image_format, values)
 	disp.set_texture(ImageTexture.create_from_image(image))
@@ -325,14 +328,52 @@ func _update_uniforms():
 	uniform_set = rd.uniform_set_create(bindings, shader, 0)
 	# Note: when changing the uniform set, use the same bindings Array (do not create a new Array)
 
+func _notification(what):
+	# Object destructor, triggered before the engine deletes this Node.
+	if what == NOTIFICATION_PREDELETE:
+		cleanup_gpu()
+		
+func cleanup_gpu():
+	if rd == null:
+		return
+	# All resources must be freed after use to avoid memory leaks.
+	rd.free_rid(pipeline)
+	pipeline = RID()
+
+	rd.free_rid(uniform_set)
+	uniform_set = RID()
+
+	rd.free_rid(shader)
+	shader = RID()
+
+	rd.free()
+	rd = null
+
+func clean_up_cpu():
+	buffers.clear()
+	uniforms.clear()
+	bindings.clear()
+	pass
+
 #endregion
+
+func get_code():
+	init_code = $"../StandAlone/VBoxCode/VSplitContainer2/VSplitContainer/VBoxContainer/TextEditInit".text
+	exec_code = $"../StandAlone/VBoxCode/VSplitContainer2/VSplitContainer/VBoxContainer2/TextEditExec".text
+	functions_code = $"../StandAlone/VBoxCode/VSplitContainer2/VBoxContainer/TextEditFunc".text
+
+func _on_button_compile():
+	pause = true
+	cleanup_gpu()
+	clean_up_cpu()
+	get_code()
+	compile()
 
 func _on_button_step():
 	pause = true
 	compute() # current_pass = 0
 	compute() # current_pass = 1
 	display_all_values()
-
 
 func _on_button_play():
 	pause = false # Replace with function body.

@@ -1,6 +1,7 @@
-[gd_scene load_steps=7 format=3 uid="uid://cn0dsh2q6mbwq"]
+[gd_scene load_steps=12 format=3 uid="uid://cn0dsh2q6mbwq"]
 
 [ext_resource type="Script" path="res://addons/cellular_automata_studio/cellular_automata_studio_2d.gd" id="1_g2lpm"]
+[ext_resource type="Script" path="res://addons/cellular_automata_studio/string_color.gd" id="2_6c80k"]
 
 [sub_resource type="CodeHighlighter" id="CodeHighlighter_diay8"]
 number_color = Color(1, 1, 0.501961, 1)
@@ -27,6 +28,26 @@ frequency = 0.6163
 [sub_resource type="NoiseTexture2D" id="NoiseTexture2D_0uf6p"]
 noise = SubResource("FastNoiseLite_wghjs")
 
+[sub_resource type="Resource" id="Resource_l3xlw"]
+script = ExtResource("2_6c80k")
+text = "state_0"
+color = Color(1, 1, 1, 1)
+
+[sub_resource type="Resource" id="Resource_skgpx"]
+script = ExtResource("2_6c80k")
+text = "state_1"
+color = Color(0, 0.764706, 0.768627, 1)
+
+[sub_resource type="Resource" id="Resource_gmqwc"]
+script = ExtResource("2_6c80k")
+text = "state_2"
+color = Color(0.870588, 0, 0.901961, 1)
+
+[sub_resource type="Resource" id="Resource_hwxnk"]
+script = ExtResource("2_6c80k")
+text = "state_3"
+color = Color(0.717647, 0.701961, 0, 1)
+
 [node name="VBoxMain" type="VBoxContainer"]
 anchors_preset = 15
 anchor_right = 1.0
@@ -49,21 +70,21 @@ custom_minimum_size = Vector2(48, 48)
 layout_mode = 2
 tooltip_text = "Compile your code"
 theme_override_font_sizes/font_size = 24
-text = "C"
+text = "Compile"
 
 [node name="ButtonStep" type="Button" parent="HBoxToolbar/HBoxContainer"]
 custom_minimum_size = Vector2(48, 48)
 layout_mode = 2
 tooltip_text = "Execute one step of your code"
 theme_override_font_sizes/font_size = 24
-text = ">|"
+text = "Step"
 
 [node name="ButtonExec" type="Button" parent="HBoxToolbar/HBoxContainer"]
 custom_minimum_size = Vector2(48, 48)
 layout_mode = 2
 tooltip_text = "Execute your code"
 theme_override_font_sizes/font_size = 24
-text = ">"
+text = "Play"
 
 [node name="LabelTitle" type="Label" parent="HBoxToolbar"]
 layout_mode = 2
@@ -78,36 +99,84 @@ size_flags_vertical = 3
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="TextEditInit" type="TextEdit" parent="StandAlone/VBoxCode"]
+[node name="VSplitContainer2" type="VSplitContainer" parent="StandAlone/VBoxCode"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="VSplitContainer" type="VSplitContainer" parent="StandAlone/VBoxCode/VSplitContainer2"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="StandAlone/VBoxCode/VSplitContainer2/VSplitContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Label" type="Label" parent="StandAlone/VBoxCode/VSplitContainer2/VSplitContainer/VBoxContainer"]
+layout_mode = 2
+text = "Initialisation"
+horizontal_alignment = 1
+
+[node name="TextEditInit" type="TextEdit" parent="StandAlone/VBoxCode/VSplitContainer2/VSplitContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_font_sizes/font_size = 14
-text = "// INITIALISATION CODE : step = 0
-// You will use the following variables:
-//    uint WSX, WSY : global WorkSpace in X and Y
-//    uint x,y,p : cell position
-//    int present_state : cell state. An integer random value from int.MIN and int.MAX
-//    int future_state : the new cell state
+text = "int state = abs( present_state ) % 4 ;
+if(state == 0)
+	future_state = state_0;
+if(state == 1)
+	future_state = state_1;
+if(state == 2)
+	future_state = state_2;
+if(state == 3)
+	future_state = state_3;
 "
 syntax_highlighter = SubResource("CodeHighlighter_diay8")
 
-[node name="TextEditExec" type="TextEdit" parent="StandAlone/VBoxCode"]
+[node name="VBoxContainer2" type="VBoxContainer" parent="StandAlone/VBoxCode/VSplitContainer2/VSplitContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Label2" type="Label" parent="StandAlone/VBoxCode/VSplitContainer2/VSplitContainer/VBoxContainer2"]
+layout_mode = 2
+text = "Execution"
+horizontal_alignment = 1
+
+[node name="TextEditExec" type="TextEdit" parent="StandAlone/VBoxCode/VSplitContainer2/VSplitContainer/VBoxContainer2"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 size_flags_stretch_ratio = 2.0
 theme_override_font_sizes/font_size = 14
-text = "// EXECUTION CODE : step >= 1
-// You will use the following variables:
-//    uint WSX, WSY : global WorkSpace in X and Y
-//    uint x,y,p : cell position
-//    int present_state : current cell state. Do not modify
-//    int future_state : the new cell state
+text = "if (present_state == state_0) {
+	uint nb_1 = nb_neighbors_8(x,y,state_1);
+	if ( nb_1 >= 3)	future_state = state_1;
+}
+if (present_state == state_1) {
+	uint nb_2 = nb_neighbors_8(x,y,state_2);
+	if ( nb_2 >= 3)	future_state = state_2;
+}
+if (present_state == state_2) {
+	uint nb_3 = nb_neighbors_8(x,y,state_3);
+	if ( nb_3 >= 3)	future_state = state_3;
+}
+if (present_state == state_3) {
+	uint nb_0 = nb_neighbors_8(x,y,state_0);
+	if ( nb_0 >= 3)	future_state = state_0;
+}
 "
 syntax_highlighter = SubResource("CodeHighlighter_1sujs")
 
-[node name="TextEditFunc" type="TextEdit" parent="StandAlone/VBoxCode"]
+[node name="VBoxContainer" type="VBoxContainer" parent="StandAlone/VBoxCode/VSplitContainer2"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Label3" type="Label" parent="StandAlone/VBoxCode/VSplitContainer2/VBoxContainer"]
+layout_mode = 2
+text = "Functions"
+horizontal_alignment = 1
+
+[node name="TextEditFunc" type="TextEdit" parent="StandAlone/VBoxCode/VSplitContainer2/VBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -134,7 +203,11 @@ texture = SubResource("NoiseTexture2D_0uf6p")
 
 [node name="CellularAutomata2D" type="Node" parent="." node_paths=PackedStringArray("display_in")]
 script = ExtResource("1_g2lpm")
+pause = true
+WSX = 512
+WSY = 512
 display_in = NodePath("../StandAlone/TextureRect")
+cell_states = Array[Object]([SubResource("Resource_l3xlw"), SubResource("Resource_skgpx"), SubResource("Resource_gmqwc"), SubResource("Resource_hwxnk")])
 init_code = "
 // INITIALISATION CODE (step = 0)
 // You can use the following variables:
@@ -160,3 +233,7 @@ text = "Output :
 
 "
 clip_text = true
+
+[connection signal="pressed" from="HBoxToolbar/HBoxContainer/ButtonCompile" to="CellularAutomata2D" method="_on_button_compile"]
+[connection signal="pressed" from="HBoxToolbar/HBoxContainer/ButtonStep" to="CellularAutomata2D" method="_on_button_step"]
+[connection signal="pressed" from="HBoxToolbar/HBoxContainer/ButtonExec" to="CellularAutomata2D" method="_on_button_play"]
