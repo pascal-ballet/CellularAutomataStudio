@@ -16,13 +16,13 @@ color = Color(1, 1, 0, 1)
 
 [node name="CompShadStudioEx2" type="Node2D"]
 
-[node name="CellularAutomataStudio2D" type="Node" parent="." node_paths=PackedStringArray("matrix")]
+[node name="CellularAutomataStudio2D" type="Node" parent="." node_paths=PackedStringArray("display_in")]
 script = ExtResource("1_pdqaf")
 print_generated_code = true
 pause = true
 WSX = 512
 WSY = 512
-matrix = NodePath("../Grid512x512")
+display_in = NodePath("../Grid512x512")
 cell_states = Array[ExtResource("2_tqgad")]([SubResource("Resource_dpcxm"), SubResource("Resource_086xb")])
 init_code = "
 // INITIALISATION CODE (step = 0)

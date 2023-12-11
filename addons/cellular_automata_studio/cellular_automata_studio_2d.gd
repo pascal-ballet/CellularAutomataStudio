@@ -34,7 +34,7 @@ var nb_passes		: int = 2
 @export var WSY				: int = 128
 
 ## Drag and drop your Sprite2D here.
-@export var matrix:Sprite2D
+@export var display_in:Node
 var matrix_future:Sprite2D
 
 @export var cell_states : Array[StringColor]= [StringColor.new()]
@@ -264,16 +264,16 @@ void main() {
 func display_all_values():
 	# Read back the data from the buffers
 	var output_bytes :   PackedByteArray = rd.buffer_get_data(buffers[0])
-	if is_instance_valid(matrix):
-		display_values(matrix, output_bytes)
+	if is_instance_valid(display_in):
+		display_values(display_in, output_bytes)
 	var output_bytes_future :   PackedByteArray = rd.buffer_get_data(buffers[1])
 	if is_instance_valid(matrix_future):
 		display_values(matrix_future, output_bytes)
 
-func display_values(sprite : Sprite2D, values : PackedByteArray): # PackedInt32Array):
+func display_values(disp, values : PackedByteArray): # PackedInt32Array):
 	var image_format : int = Image.FORMAT_RGBA8
 	var image := Image.create_from_data(WSX, WSY, false, image_format, values)
-	sprite.set_texture(ImageTexture.create_from_image(image))
+	disp.set_texture(ImageTexture.create_from_image(image))
 
 var step  : int = 0
 

@@ -5,11 +5,11 @@
 
 [node name="Tutorial" type="Node2D"]
 
-[node name="CellularAutomata2D" type="Node" parent="." node_paths=PackedStringArray("matrix")]
+[node name="CellularAutomata2D" type="Node" parent="." node_paths=PackedStringArray("display_in")]
 script = ExtResource("1_nkpga")
 WSX = 512
 WSY = 512
-matrix = NodePath("../Grid512x512")
+display_in = NodePath("../Grid512x512")
 
 [node name="Grid512x512" type="Sprite2D" parent="."]
 position = Vector2(779, 303)

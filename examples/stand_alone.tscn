@@ -82,7 +82,7 @@ size_flags_horizontal = 3
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-theme_override_font_sizes/font_size = 24
+theme_override_font_sizes/font_size = 14
 text = "// INITIALISATION CODE : step = 0
 // You will use the following variables:
 //    uint WSX, WSY : global WorkSpace in X and Y
@@ -97,7 +97,7 @@ layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 size_flags_stretch_ratio = 2.0
-theme_override_font_sizes/font_size = 24
+theme_override_font_sizes/font_size = 14
 text = "// EXECUTION CODE : step >= 1
 // You will use the following variables:
 //    uint WSX, WSY : global WorkSpace in X and Y
@@ -112,7 +112,7 @@ layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 size_flags_stretch_ratio = 2.0
-theme_override_font_sizes/font_size = 24
+theme_override_font_sizes/font_size = 14
 text = "// FUNCTIONS CODE
 // Write all your functions here in GLSL
 // You can use the following global variables:
@@ -132,13 +132,30 @@ layout_mode = 2
 size_flags_horizontal = 3
 texture = SubResource("NoiseTexture2D_0uf6p")
 
-[node name="CellularAutomata2D" type="Node" parent="."]
+[node name="CellularAutomata2D" type="Node" parent="." node_paths=PackedStringArray("display_in")]
 script = ExtResource("1_g2lpm")
+display_in = NodePath("../StandAlone/TextureRect")
+init_code = "
+// INITIALISATION CODE (step = 0)
+// You can use the following variables:
+//    uint WSX, WSY (global WorkSpace in X and Y)
+//    uint x,y,p (cell position)
+//    int present_state (cell state. An integer random value from int.MIN and int.MAX)
+//    int future_state (the new cell state)
+"
+exec_code = "
+// EXECUTION CODE (step >= 1)
+// You can use the following variables:
+//    uint WSX, WSY (global WorkSpace in X and Y)
+//    uint x,y,p (cell position)
+//    int present_state (current cell state. Do not modify)
+//    int future_state (the new cell state)
+"
 
 [node name="LabelOutput" type="Label" parent="."]
 layout_mode = 2
 size_flags_vertical = 1
-theme_override_font_sizes/font_size = 24
+theme_override_font_sizes/font_size = 14
 text = "Output :
 
 "
