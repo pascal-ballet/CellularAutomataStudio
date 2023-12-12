@@ -203,6 +203,8 @@ texture = SubResource("NoiseTexture2D_0uf6p")
 
 [node name="CellularAutomata2D" type="Node" parent="." node_paths=PackedStringArray("display_in")]
 script = ExtResource("1_g2lpm")
+print_step = true
+print_generated_code = true
 pause = true
 WSX = 512
 WSY = 512

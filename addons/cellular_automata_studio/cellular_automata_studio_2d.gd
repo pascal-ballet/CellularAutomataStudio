@@ -65,12 +65,16 @@ var nb_passes		: int = 2
 
 var rd 				: RenderingDevice
 var shader 			: RID
+var shader_src 		: RDShaderSource
 var buffers 		: Array[RID]
 var buffer_params 	: RID
 
 var uniforms		: Array[RDUniform]
 #var uniform_2 		: RDUniform
 var uniform_params 	: RDUniform
+
+var buffers_init	: bool = false
+var uniforms_init	: bool = false
 
 var bindings		: Array = []
 
@@ -87,7 +91,8 @@ func _ready():
 
 func compile():
 	# Create a local rendering device.
-	rd = RenderingServer.create_local_rendering_device()
+	if not rd:
+		rd = RenderingServer.create_local_rendering_device()
 	if not rd:
 		set_process(false)
 		print("Compute shaders are not available")
@@ -194,7 +199,8 @@ void main() {
 		print(GLSL_all)
 	
 	# Compile the shader by passing a string
-	var shader_src := RDShaderSource.new()
+	if not shader_src:
+		shader_src = RDShaderSource.new()
 	shader_src.set_stage_source(RenderingDevice.SHADER_STAGE_COMPUTE, GLSL_all)
 	var shader_spirv := rd.shader_compile_spirv_from_source(shader_src)
 	
@@ -207,25 +213,34 @@ void main() {
 	shader = rd.shader_create_from_spirv(shader_spirv)
 
 
+
+
+
+
+
+
+
 	# *********************
 	# *  BUFFERS CREATION *
 	# *********************
-	
-	# Buffer for current_pass
-	var input_params :PackedInt32Array = PackedInt32Array()
-	input_params.append(step)
-	input_params.append(current_pass)
-	var input_params_bytes := input_params.to_byte_array()
-	buffer_params = rd.storage_buffer_create(input_params_bytes.size(), input_params_bytes)
-	
-	# Buffers from/for data (Sprite2D)
-	for b in nb_buffers:
-		var input :PackedInt32Array = PackedInt32Array()
-		for i in range(WSX):
-			for j in range(WSY):
-				input.append(randi())
-		var input_bytes :PackedByteArray = input.to_byte_array()
-		buffers.append(rd.storage_buffer_create(input_bytes.size(), input_bytes))
+	if buffers_init == false:
+		# Buffer for current_pass
+		var input_params :PackedInt32Array = PackedInt32Array()
+		input_params.append(step)
+		input_params.append(current_pass)
+		var input_params_bytes := input_params.to_byte_array()
+		buffer_params = rd.storage_buffer_create(input_params_bytes.size(), input_params_bytes)
+		
+		# Buffers from/for data (Sprite2D)
+		for b in nb_buffers:
+			var input :PackedInt32Array = PackedInt32Array()
+			for i in range(WSX):
+				for j in range(WSY):
+					input.append(randi())
+			var input_bytes :PackedByteArray = input.to_byte_array()
+			buffers.append(rd.storage_buffer_create(input_bytes.size(), input_bytes))
+
+	buffers_init = true
 
 	# *********************
 	# * UNIFORMS CREATION *
@@ -338,21 +353,21 @@ func cleanup_gpu():
 		return
 	# All resources must be freed after use to avoid memory leaks.
 	rd.free_rid(pipeline)
-	#pipeline = RID()
+	pipeline = RID()
 
 	rd.free_rid(uniform_set)
-	#uniform_set = RID()
+	uniform_set = RID()
 
 	rd.free_rid(shader)
-	#shader = RID()
+	shader = RID()
 
-	rd.free()
-	rd = null
+	#rd.free()
+	#rd = null
 
 func clean_up_cpu():
-	buffers = []#.clear()
-	uniforms = []#.clear()
-	bindings = []#.clear()
+	#buffers = []#.clear()
+	#uniforms = []#.clear()
+	#bindings = []#.clear()
 	pass
 
 #endregion
