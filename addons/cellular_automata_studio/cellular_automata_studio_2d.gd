@@ -90,6 +90,8 @@ func _ready():
 	compile()
 
 func compile():
+	step = 0
+	current_pass = 0
 	# Create a local rendering device.
 	if not rd:
 		rd = RenderingServer.create_local_rendering_device()
