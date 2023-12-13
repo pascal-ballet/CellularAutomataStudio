@@ -1,6 +1,7 @@
-[gd_scene load_steps=12 format=3 uid="uid://cn0dsh2q6mbwq"]
+[gd_scene load_steps=13 format=3 uid="uid://cn0dsh2q6mbwq"]
 
 [ext_resource type="Script" path="res://addons/cellular_automata_studio/cellular_automata_studio_2d.gd" id="1_g2lpm"]
+[ext_resource type="Script" path="res://examples/stand_alone.gd" id="1_k7f4v"]
 [ext_resource type="Script" path="res://addons/cellular_automata_studio/string_color.gd" id="2_6c80k"]
 
 [sub_resource type="CodeHighlighter" id="CodeHighlighter_diay8"]
@@ -56,6 +57,7 @@ grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+script = ExtResource("1_k7f4v")
 
 [node name="HBoxToolbar" type="HBoxContainer" parent="."]
 custom_minimum_size = Vector2(48, 48)
@@ -77,7 +79,7 @@ custom_minimum_size = Vector2(48, 48)
 layout_mode = 2
 tooltip_text = "Execute one step of your code"
 theme_override_font_sizes/font_size = 24
-text = "Step"
+text = "Step/Pause"
 
 [node name="ButtonExec" type="Button" parent="HBoxToolbar/HBoxContainer"]
 custom_minimum_size = Vector2(48, 48)
@@ -85,6 +87,15 @@ layout_mode = 2
 tooltip_text = "Execute your code"
 theme_override_font_sizes/font_size = 24
 text = "Play"
+
+[node name="OptionButton" type="OptionButton" parent="HBoxToolbar/HBoxContainer"]
+layout_mode = 2
+item_count = 2
+selected = 1
+popup/item_0/text = "Blank grid"
+popup/item_0/id = 0
+popup/item_1/text = "Random grid"
+popup/item_1/id = 1
 
 [node name="LabelTitle" type="Label" parent="HBoxToolbar"]
 layout_mode = 2
@@ -236,6 +247,6 @@ text = "Output :
 "
 clip_text = true
 
-[connection signal="pressed" from="HBoxToolbar/HBoxContainer/ButtonCompile" to="CellularAutomata2D" method="_on_button_compile"]
+[connection signal="pressed" from="HBoxToolbar/HBoxContainer/ButtonCompile" to="." method="_on_button_compile_pressed"]
 [connection signal="pressed" from="HBoxToolbar/HBoxContainer/ButtonStep" to="CellularAutomata2D" method="_on_button_step"]
 [connection signal="pressed" from="HBoxToolbar/HBoxContainer/ButtonExec" to="CellularAutomata2D" method="_on_button_play"]

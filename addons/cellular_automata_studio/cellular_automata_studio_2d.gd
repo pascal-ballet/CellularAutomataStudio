@@ -86,10 +86,9 @@ var uniform_set		: RID
 #func _enter_tree():
 #	cell_states = [StringColor.new(),StringColor.new()]
 func _ready():
-	get_code()
-	compile()
+	compile(init_code,exec_code,functions_code)
 
-func compile():
+func compile(init, exec, functions):
 	step = 0
 	current_pass = 0
 	# Create a local rendering device.
@@ -167,7 +166,7 @@ uint nb_neighbors_8(uint x,uint y, int state) {
 }
 """
 
-	GLSL_header += functions_code
+	GLSL_header += functions
 
 
 	var GLSL_code : String = """
@@ -181,9 +180,9 @@ void main() {
 		// Write your RULES below vvvvvvvvvvvvvvvvv
 		int future_state = present_state;
 		if(step == 0) { // Initialization ---------
-""" + init_code + """
+""" + init + """
 		} else { // Execution----------------------
-""" + exec_code + """
+""" + exec + """
 		}
 		// END of your RULES ^^^^^^^^^^^^^^^^^^^^^^
 		data_future[p] = future_state;
@@ -373,18 +372,6 @@ func clean_up_cpu():
 	pass
 
 #endregion
-
-func get_code():
-	init_code = $"../StandAlone/VBoxCode/VSplitContainer2/VSplitContainer/VBoxContainer/TextEditInit".text
-	exec_code = $"../StandAlone/VBoxCode/VSplitContainer2/VSplitContainer/VBoxContainer2/TextEditExec".text
-	functions_code = $"../StandAlone/VBoxCode/VSplitContainer2/VBoxContainer/TextEditFunc".text
-
-func _on_button_compile():
-	pause = true
-	cleanup_gpu()
-	clean_up_cpu()
-	get_code()
-	compile()
 
 func _on_button_step():
 	pause = true
