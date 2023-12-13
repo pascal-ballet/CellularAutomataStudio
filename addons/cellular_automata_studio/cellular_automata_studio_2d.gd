@@ -88,7 +88,7 @@ var uniform_set		: RID
 func _ready():
 	compile(init_code,exec_code,functions_code)
 
-func compile(init, exec, functions):
+func compile(init : String, exec : String, functions : String):
 	step = 0
 	current_pass = 0
 	# Create a local rendering device.
@@ -328,21 +328,25 @@ func _process(_delta):
 
 ## Pass the interesting values from CPU to GPU
 func _update_uniforms():
-	# Buffer for current_pass
+	# Create a CPU Buffer for current_pass
 	var input_params :PackedInt32Array = PackedInt32Array()
 	input_params.append(step)
 	input_params.append(current_pass)
 	var input_params_bytes := input_params.to_byte_array()
+	# Create a GPU Buffer from the CPU one
 	buffer_params = rd.storage_buffer_create(input_params_bytes.size(), input_params_bytes)
-	# Create current_pass uniform pass
+	
+	# Set the new buffer thanks to a new uniform between the CPU and the GPU
 	uniform_params = RDUniform.new()
 	uniform_params.uniform_type = RenderingDevice.UNIFORM_TYPE_STORAGE_BUFFER
 	uniform_params.binding = 0 # this needs to match the "binding" in our shader file
 	uniform_params.add_id(buffer_params)
 	bindings[0] = uniform_params
 	
-	uniform_set = rd.uniform_set_create(bindings, shader, 0)
+	# Set the new values from the CPU to the GPU
 	# Note: when changing the uniform set, use the same bindings Array (do not create a new Array)
+	uniform_set = rd.uniform_set_create(bindings, shader, 0)
+
 
 func _notification(notif):
 	# Object destructor, triggered before the engine deletes this Node.
