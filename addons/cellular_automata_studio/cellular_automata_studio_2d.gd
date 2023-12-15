@@ -88,7 +88,10 @@ var uniform_set		: RID
 func _ready():
 	compile(init_code,exec_code,functions_code)
 
+var err_msg:String = ""
+
 func compile(init : String, exec : String, functions : String):
+	err_msg = ""
 	step = 0
 	current_pass = 0
 	# Create a local rendering device.
@@ -96,7 +99,8 @@ func compile(init : String, exec : String, functions : String):
 		rd = RenderingServer.create_local_rendering_device()
 	if not rd:
 		set_process(false)
-		print("Compute shaders are not available")
+		err_msg = "Compute shaders are not available"
+		print(err_msg)
 		return
 		
 	# *********************
@@ -205,11 +209,11 @@ void main() {
 	shader_src.set_stage_source(RenderingDevice.SHADER_STAGE_COMPUTE, GLSL_all)
 	var shader_spirv := rd.shader_compile_spirv_from_source(shader_src)
 	
-	var err:String=shader_spirv.compile_error_compute
+	err_msg = shader_spirv.compile_error_compute
 	
-	if err != "":
-		printerr(err)
-		get_tree().quit()
+	if err_msg != "":
+		printerr(err_msg)
+		return
 	
 	shader = rd.shader_create_from_spirv(shader_spirv)
 
@@ -350,6 +354,27 @@ func _update_uniforms():
 	# Note: when changing the uniform set, use the same bindings Array (do not create a new Array)
 	uniform_set = rd.uniform_set_create(bindings, shader, 0)
 
+## Pass the interesting values from CPU to GPU
+func _reinit_matrix(m:int):
+	# Buffers from/for data (Sprite2D)
+	var input :PackedInt32Array = PackedInt32Array()
+	for i in range(WSX):
+		for j in range(WSY):
+			if m==0:
+				input.append(0x00000000)
+			if m==1:
+				input.append(randi())
+	var input_bytes :PackedByteArray = input.to_byte_array()
+	buffers[0]=(rd.storage_buffer_create(input_bytes.size(), input_bytes))
+	# Uniform
+	var uniform = RDUniform.new()
+	uniform.uniform_type = RenderingDevice.UNIFORM_TYPE_STORAGE_BUFFER
+	uniform.binding = 1 # this needs to match the "binding" in our shader file
+	uniform.add_id(buffers[0])
+	bindings[1] = uniform
+	# Set the new values from the CPU to the GPU
+	# Note: when changing the uniform set, use the same bindings Array (do not create a new Array)
+	uniform_set = rd.uniform_set_create(bindings, shader, 0)
 
 func _notification(notif):
 	# Object destructor, triggered before the engine deletes this Node.
@@ -387,4 +412,4 @@ func _on_button_step():
 	display_all_values()
 
 func _on_button_play():
-	pause = false # Replace with function body.
+	pause = !pause # Replace with function body.

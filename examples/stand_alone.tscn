@@ -67,29 +67,9 @@ layout_mode = 2
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="ButtonCompile" type="Button" parent="HBoxToolbar/HBoxContainer"]
-custom_minimum_size = Vector2(48, 48)
-layout_mode = 2
-tooltip_text = "Compile your code"
-theme_override_font_sizes/font_size = 24
-text = "Compile"
-
-[node name="ButtonStep" type="Button" parent="HBoxToolbar/HBoxContainer"]
-custom_minimum_size = Vector2(48, 48)
-layout_mode = 2
-tooltip_text = "Execute one step of your code"
-theme_override_font_sizes/font_size = 24
-text = "Step/Pause"
-
-[node name="ButtonExec" type="Button" parent="HBoxToolbar/HBoxContainer"]
-custom_minimum_size = Vector2(48, 48)
-layout_mode = 2
-tooltip_text = "Execute your code"
-theme_override_font_sizes/font_size = 24
-text = "Play"
-
 [node name="OptionButton" type="OptionButton" parent="HBoxToolbar/HBoxContainer"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 18
 item_count = 2
 selected = 1
 popup/item_0/text = "Blank grid"
@@ -97,9 +77,28 @@ popup/item_0/id = 0
 popup/item_1/text = "Random grid"
 popup/item_1/id = 1
 
+[node name="ButtonCompile" type="Button" parent="HBoxToolbar/HBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "Compile"
+
+[node name="ButtonStep" type="Button" parent="HBoxToolbar/HBoxContainer"]
+custom_minimum_size = Vector2(48, 48)
+layout_mode = 2
+tooltip_text = "Execute one step of your code"
+theme_override_font_sizes/font_size = 18
+text = "Step / Pause"
+
+[node name="ButtonExec" type="Button" parent="HBoxToolbar/HBoxContainer"]
+custom_minimum_size = Vector2(48, 48)
+layout_mode = 2
+tooltip_text = "Execute your code"
+theme_override_font_sizes/font_size = 18
+text = "Play / Pause"
+
 [node name="LabelTitle" type="Label" parent="HBoxToolbar"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 24
+theme_override_font_sizes/font_size = 18
 text = " Cellular Automata Studio (standalone version 1.0) "
 
 [node name="StandAlone" type="HSplitContainer" parent="."]
@@ -124,6 +123,7 @@ size_flags_vertical = 3
 
 [node name="Label" type="Label" parent="StandAlone/VBoxCode/VSplitContainer2/VSplitContainer/VBoxContainer"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 18
 text = "Initialisation"
 horizontal_alignment = 1
 
@@ -131,7 +131,7 @@ horizontal_alignment = 1
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-theme_override_font_sizes/font_size = 14
+theme_override_font_sizes/font_size = 18
 text = "int state = abs( present_state ) % 4 ;
 if(state == 0)
 	future_state = state_0;
@@ -150,6 +150,7 @@ size_flags_vertical = 3
 
 [node name="Label2" type="Label" parent="StandAlone/VBoxCode/VSplitContainer2/VSplitContainer/VBoxContainer2"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 18
 text = "Execution"
 horizontal_alignment = 1
 
@@ -158,7 +159,7 @@ layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 size_flags_stretch_ratio = 2.0
-theme_override_font_sizes/font_size = 14
+theme_override_font_sizes/font_size = 18
 text = "if (present_state == state_0) {
 	uint nb_1 = nb_neighbors_8(x,y,state_1);
 	if ( nb_1 >= 3)	future_state = state_1;
@@ -184,6 +185,7 @@ size_flags_vertical = 3
 
 [node name="Label3" type="Label" parent="StandAlone/VBoxCode/VSplitContainer2/VBoxContainer"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 18
 text = "Functions"
 horizontal_alignment = 1
 
@@ -192,7 +194,7 @@ layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 size_flags_stretch_ratio = 2.0
-theme_override_font_sizes/font_size = 14
+theme_override_font_sizes/font_size = 18
 text = "// FUNCTIONS CODE
 // Write all your functions here in GLSL
 // You can use the following global variables:
@@ -211,6 +213,19 @@ syntax_highlighter = SubResource("CodeHighlighter_8t2bd")
 layout_mode = 2
 size_flags_horizontal = 3
 texture = SubResource("NoiseTexture2D_0uf6p")
+
+[node name="LabelErrors" type="RichTextLabel" parent="."]
+clip_contents = false
+custom_minimum_size = Vector2(0, 80)
+layout_mode = 2
+theme_override_font_sizes/normal_font_size = 18
+theme_override_font_sizes/bold_font_size = 18
+theme_override_font_sizes/italics_font_size = 18
+theme_override_font_sizes/bold_italics_font_size = 18
+theme_override_font_sizes/mono_font_size = 18
+text = "Output :
+
+"
 
 [node name="CellularAutomata2D" type="Node" parent="." node_paths=PackedStringArray("display_in")]
 script = ExtResource("1_g2lpm")
@@ -237,15 +252,6 @@ exec_code = "
 //    int present_state (current cell state. Do not modify)
 //    int future_state (the new cell state)
 "
-
-[node name="LabelOutput" type="Label" parent="."]
-layout_mode = 2
-size_flags_vertical = 1
-theme_override_font_sizes/font_size = 14
-text = "Output :
-
-"
-clip_text = true
 
 [connection signal="pressed" from="HBoxToolbar/HBoxContainer/ButtonCompile" to="." method="_on_button_compile_pressed"]
 [connection signal="pressed" from="HBoxToolbar/HBoxContainer/ButtonStep" to="CellularAutomata2D" method="_on_button_step"]
