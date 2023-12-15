@@ -9,7 +9,10 @@
 
 **Several examples are available: test them to understand how they work and what can be done**
 
+**You can also execute the Standalone scene and directly code inside it**
+
 **Tutorial**
+
 After importing the plugin, activate it (AssetLib => Extension => Activate).
 
 Now you can add a node called CellularAutomataStudio.
@@ -24,8 +27,6 @@ Add a Sprite2D or a TexturedRect to display your cellular automata grid:
   - then drag & drop it into the property DisplayIn of the CellularAutomataStudio property
 
 Fill the properties init_code, exec_code and functions_code with GLSL code.
-  - Try the simple examples or 
-  - directly code with the standalone example
   - The init_code is called at the beginning of launch of your application
   - The exec_code is called evry frame
   - The functions_code allow you to write your own functions.
