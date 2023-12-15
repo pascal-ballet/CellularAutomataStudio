@@ -247,27 +247,30 @@ void main() {
 	# *********************
 	# * UNIFORMS CREATION *
 	# *********************
-	
-	# Create current_pass uniform pass
-	uniform_params = RDUniform.new()
-	uniform_params.uniform_type = RenderingDevice.UNIFORM_TYPE_STORAGE_BUFFER
-	uniform_params.binding = 0 # this needs to match the "binding" in our shader file
-	uniform_params.add_id(buffer_params)
-	
-	var nb_uniforms : int = 2
-	for b in nb_uniforms:
-		var uniform = RDUniform.new()
-		uniform.uniform_type = RenderingDevice.UNIFORM_TYPE_STORAGE_BUFFER
-		uniform.binding = b+1 # this needs to match the "binding" in our shader file
-		uniform.add_id(buffers[b])
-		uniforms.append(uniform)
+	if uniforms_init == false:
+		# Create current_pass uniform pass
+		uniform_params = RDUniform.new()
+		uniform_params.uniform_type = RenderingDevice.UNIFORM_TYPE_STORAGE_BUFFER
+		uniform_params.binding = 0 # this needs to match the "binding" in our shader file
+		uniform_params.add_id(buffer_params)
+		
+		var nb_uniforms : int = 2
+		for b in nb_uniforms:
+			var uniform = RDUniform.new()
+			uniform.uniform_type = RenderingDevice.UNIFORM_TYPE_STORAGE_BUFFER
+			uniform.binding = b+1 # this needs to match the "binding" in our shader file
+			uniform.add_id(buffers[b])
+			uniforms.append(uniform)
 
-	# Create the uniform SET between CPU & GPU
-	bindings = [uniform_params]
-	for b in nb_buffers:
-		bindings.append(uniforms[b])
-	
-	uniform_set = rd.uniform_set_create(bindings, shader, 0) # the last parameter (the 0) needs to match the "set" in our shader file
+		# Create the uniform SET between CPU & GPU
+		bindings = [uniform_params]
+		for b in nb_buffers:
+			bindings.append(uniforms[b])
+		
+		uniform_set = rd.uniform_set_create(bindings, shader, 0) # the last parameter (the 0) needs to match the "set" in our shader file
+
+		uniforms_init = true
+
 
 	# **************************
 	# *  COMPUTE LIST CREATION *
