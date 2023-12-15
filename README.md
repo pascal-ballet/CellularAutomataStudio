@@ -5,7 +5,7 @@
 
 **[Cellular Automata Studio](https://virtulab.univ-brest.fr) is an addon for Godot Engine that enables you to write Cellular automata using Compute Shaders, for speed.**
 
-![logo](cellular_automata_studio_ex2.png)
+![logo](screenshots/cellular_automata_studio_ex2.png)
 
 **Several examples are available: test them to understand how they work and what can be done**
 
