@@ -86,10 +86,9 @@ var uniform_set		: RID
 #func _enter_tree():
 #	cell_states = [StringColor.new(),StringColor.new()]
 func _ready():
-	get_code()
-	compile()
+	compile(init_code,exec_code,functions_code)
 
-func compile():
+func compile(init : String, exec : String, functions : String):
 	step = 0
 	current_pass = 0
 	# Create a local rendering device.
@@ -167,7 +166,7 @@ uint nb_neighbors_8(uint x,uint y, int state) {
 }
 """
 
-	GLSL_header += functions_code
+	GLSL_header += functions
 
 
 	var GLSL_code : String = """
@@ -181,9 +180,9 @@ void main() {
 		// Write your RULES below vvvvvvvvvvvvvvvvv
 		int future_state = present_state;
 		if(step == 0) { // Initialization ---------
-""" + init_code + """
+""" + init + """
 		} else { // Execution----------------------
-""" + exec_code + """
+""" + exec + """
 		}
 		// END of your RULES ^^^^^^^^^^^^^^^^^^^^^^
 		data_future[p] = future_state;
@@ -332,21 +331,25 @@ func _process(_delta):
 
 ## Pass the interesting values from CPU to GPU
 func _update_uniforms():
-	# Buffer for current_pass
+	# Create a CPU Buffer for current_pass
 	var input_params :PackedInt32Array = PackedInt32Array()
 	input_params.append(step)
 	input_params.append(current_pass)
 	var input_params_bytes := input_params.to_byte_array()
+	# Create a GPU Buffer from the CPU one
 	buffer_params = rd.storage_buffer_create(input_params_bytes.size(), input_params_bytes)
-	# Create current_pass uniform pass
+	
+	# Set the new buffer thanks to a new uniform between the CPU and the GPU
 	uniform_params = RDUniform.new()
 	uniform_params.uniform_type = RenderingDevice.UNIFORM_TYPE_STORAGE_BUFFER
 	uniform_params.binding = 0 # this needs to match the "binding" in our shader file
 	uniform_params.add_id(buffer_params)
 	bindings[0] = uniform_params
 	
-	uniform_set = rd.uniform_set_create(bindings, shader, 0)
+	# Set the new values from the CPU to the GPU
 	# Note: when changing the uniform set, use the same bindings Array (do not create a new Array)
+	uniform_set = rd.uniform_set_create(bindings, shader, 0)
+
 
 func _notification(notif):
 	# Object destructor, triggered before the engine deletes this Node.
@@ -376,18 +379,6 @@ func clean_up_cpu():
 	pass
 
 #endregion
-
-func get_code():
-	init_code = $"../StandAlone/VBoxCode/VSplitContainer2/VSplitContainer/VBoxContainer/TextEditInit".text
-	exec_code = $"../StandAlone/VBoxCode/VSplitContainer2/VSplitContainer/VBoxContainer2/TextEditExec".text
-	functions_code = $"../StandAlone/VBoxCode/VSplitContainer2/VBoxContainer/TextEditFunc".text
-
-func _on_button_compile():
-	pause = true
-	cleanup_gpu()
-	clean_up_cpu()
-	get_code()
-	compile()
 
 func _on_button_step():
 	pause = true
