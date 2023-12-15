@@ -14,7 +14,7 @@ script = ExtResource("2_tqgad")
 text = "state_1"
 color = Color(1, 1, 0, 1)
 
-[node name="CompShadStudioEx2" type="Node2D"]
+[node name="CellAutoStudioEx2" type="Node2D"]
 
 [node name="CellularAutomataStudio2D" type="Node" parent="." node_paths=PackedStringArray("display_in")]
 script = ExtResource("1_pdqaf")

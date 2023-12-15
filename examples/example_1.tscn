@@ -24,7 +24,7 @@ script = ExtResource("2_rqpuf")
 text = "state_3"
 color = Color(1, 0, 0.545098, 1)
 
-[node name="CompShadStudioEx1" type="Node2D"]
+[node name="CellAutoStudioEx1" type="Node2D"]
 
 [node name="CellularAutomataStudio2D" type="Node" parent="." node_paths=PackedStringArray("display_in")]
 script = ExtResource("1_6846p")
