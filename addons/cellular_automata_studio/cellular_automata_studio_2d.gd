@@ -152,8 +152,19 @@ layout(binding = 2) buffer Data1 {
 		states_code += line
 	GLSL_header += states_code
 
-
 	GLSL_header += """
+uint nb_neighbors_4(uint x,uint y, int state) {
+	uint nb = 0;
+	uint x_l = uint((int(x)+int(WSX)-1)) % WSX;
+	uint x_r = uint((int(x)+int(WSX)+1)) % WSX;
+	uint y_d = uint((int(y)+int(WSY)-1)) % WSY;
+	uint y_u = uint((int(y)+int(WSY)+1)) % WSY;
+	if (data_present[x_l + y_d * WSX] == state) nb++;
+	if (data_present[x_l + y_u * WSX] == state) nb++;
+	if (data_present[x_r + y_d * WSX] == state) nb++;
+	if (data_present[x_r + y_u * WSX] == state) nb++;
+	return nb;
+}
 uint nb_neighbors_8(uint x,uint y, int state) {
 	uint nb = 0;
 	uint p = x + y * WSX;
