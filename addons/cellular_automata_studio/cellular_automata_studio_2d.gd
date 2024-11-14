@@ -22,6 +22,14 @@ var nb_passes		: int = 2
 ## Workspace Size Y, usually it matches the y size of your Sprite2D image
 @export var WSY				: int = 128
 
+
+# Tests: temporary
+@export var fields: Dictionary = {
+	"pheromone": Color(0.5,0.1,0.5,1.0),
+}
+@export var fields_2: Array[Array] = [["mol1", 0.3, 0.5], ["mol2", 0.4, 0.2]]
+# End Tests
+
 ## Drag and drop your Sprite2D here.
 @export var display_in:Node
 #var matrix_future:Sprite2D

@@ -70,10 +70,9 @@ size_flags_horizontal = 3
 [node name="OptionButton" type="OptionButton" parent="HBoxToolbar/HBoxContainer"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 18
-item_count = 2
 selected = 1
+item_count = 2
 popup/item_0/text = "Blank grid"
-popup/item_0/id = 0
 popup/item_1/text = "Random grid"
 popup/item_1/id = 1
 
@@ -218,11 +217,11 @@ texture = SubResource("NoiseTexture2D_0uf6p")
 clip_contents = false
 custom_minimum_size = Vector2(0, 80)
 layout_mode = 2
+theme_override_font_sizes/bold_italics_font_size = 18
+theme_override_font_sizes/italics_font_size = 18
+theme_override_font_sizes/mono_font_size = 18
 theme_override_font_sizes/normal_font_size = 18
 theme_override_font_sizes/bold_font_size = 18
-theme_override_font_sizes/italics_font_size = 18
-theme_override_font_sizes/bold_italics_font_size = 18
-theme_override_font_sizes/mono_font_size = 18
 text = "Output :
 
 "
